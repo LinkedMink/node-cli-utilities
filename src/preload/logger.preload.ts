@@ -13,7 +13,7 @@ import {
   transports,
   Logger as WinstonLogger,
 } from "winston";
-import { loggingConfigSchema, LogLevel, LogLevels } from "./logging,config.js";
+import { loggingConfigSchema, LogLevel, LogLevels } from "../config/logging.config.js";
 
 interface AppTransformableInfo extends Logform.TransformableInfo {
   message: string;
@@ -67,7 +67,7 @@ const loggers = new Container({
   transports: [new transports.Console()],
 });
 
-export const getLogger = (label = loggingConfig.defaultContext): AppLogger => {
+export function getLogger(label = loggingConfig.defaultContext): AppLogger {
   if (loggers.has(label)) {
     return loggers.get(label);
   }
@@ -76,23 +76,23 @@ export const getLogger = (label = loggingConfig.defaultContext): AppLogger => {
     ...loggers.options,
     format: format.combine(format.label({ label, message: true }), ...formatStack),
   });
-};
+}
 
-export const getLoggerByUrl = (moduleUrl: string): AppLogger => {
+export function getLoggerByUrl(moduleUrl: string): AppLogger {
   const moduleFilename = path.basename(fileURLToPath(moduleUrl));
   const moduleName = moduleFilename.substring(
     0,
     moduleFilename.length - path.extname(moduleFilename).length,
   );
   return getLogger(moduleName);
-};
+}
 
 type StringConvert = { toString(): string };
 function isStringConvert(value: unknown): value is StringConvert {
-  return !!(value as StringConvert).toString;
+  return typeof (value as StringConvert).toString === "function";
 }
 
-function formatError(error: unknown): string {
+export function formatError(error: unknown): string {
   if (isNativeError(error)) {
     return error.stack ?? error.message;
   } else if (typeof error === "string") {

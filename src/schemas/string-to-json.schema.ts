@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { jsonSchema } from "./json.schema";
+import type { jsonSchema } from "./json.schema.js";
 
 export const stringToJsonSchema = z.string().transform((input, ctx): z.infer<typeof jsonSchema> => {
   try {

@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@linkedmink/node-cli-utilities": ["../src/index"]
+    }
+  },
+  "include": ["**/*.ts", "../src/**/*.ts"]
+}
