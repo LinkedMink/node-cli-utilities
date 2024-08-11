@@ -1,7 +1,7 @@
 {
   "name": "@linkedmink/node-cli-utilities",
   "version": "1.0.0-0",
-  "description": "Provides data about radio stations",
+  "description": "Shared utilities and configuration for development environments setup by @LinkedMink",
   "homepage": "https://github.com/LinkedMink/node-cli-utilities#readme",
   "bugs": {
     "url": "https://github.com/LinkedMink/node-cli-utilities/issues",

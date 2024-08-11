@@ -1,4 +1,7 @@
 import { spawn } from "node:child_process";
+import { Command } from "commander";
+import { getLogger } from "../preload/logger.preload.js";
+import { Profiler } from "winston";
 
 export class CommandError extends Error {
   constructor(
@@ -45,4 +48,31 @@ export function spawnAsync(command: string, args: string[]) {
       resolve();
     });
   });
+}
+
+export async function main(cli: Command) {
+  const logger = getLogger();
+
+  cli.alias(`npx ${cli.name}`);
+
+  if (logger.isDebugEnabled()) {
+    let profiler: Profiler;
+
+    cli
+      .hook("preAction", (thisCommand, actionCommand) => {
+        logger.debug(`Running CLI subcommand: ${thisCommand.name} -> ${actionCommand.name}`);
+        profiler = logger.startTimer();
+      })
+      .hook("postAction", (thisCommand, actionCommand) => {
+        profiler.done({
+          message: `Finished CLI subcommand: ${thisCommand.name} -> ${actionCommand.name}`,
+        });
+      });
+  }
+
+  await cli.parseAsync();
+
+  if (logger.isDebugEnabled()) {
+    logger.debug(`Active Resources: ${process.getActiveResourcesInfo().toString()}`);
+  }
 }
