@@ -53,19 +53,19 @@ export function spawnAsync(command: string, args: string[]) {
 export async function main(cli: Command) {
   const logger = getLogger();
 
-  cli.alias(`npx ${cli.name}`);
+  cli.alias(`npx ${cli.name()}`);
 
   if (logger.isDebugEnabled()) {
     let profiler: Profiler;
 
     cli
       .hook("preAction", (thisCommand, actionCommand) => {
-        logger.debug(`Running CLI subcommand: ${thisCommand.name} -> ${actionCommand.name}`);
+        logger.debug(`Running CLI subcommand: ${thisCommand.name()} -> ${actionCommand.name()}`);
         profiler = logger.startTimer();
       })
       .hook("postAction", (thisCommand, actionCommand) => {
         profiler.done({
-          message: `Finished CLI subcommand: ${thisCommand.name} -> ${actionCommand.name}`,
+          message: `Finished CLI subcommand: ${thisCommand.name()} -> ${actionCommand.name()}`,
         });
       });
   }
