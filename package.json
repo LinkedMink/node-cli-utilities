@@ -1,0 +1,64 @@
+{
+  "name": "@linkedmink/node-cli-utilities",
+  "version": "1.0.0-0",
+  "description": "Provides data about radio stations",
+  "homepage": "https://github.com/LinkedMink/node-cli-utilities#readme",
+  "bugs": {
+    "url": "https://github.com/LinkedMink/node-cli-utilities/issues",
+    "email": "harlan.sang@linkedmink.net"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Harlan Sang",
+    "email": "harlan.sang@linkedmink.net",
+    "url": "https://github.com/LinkedMink"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://github.com/sponsors/LinkedMink"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LinkedMink/node-cli-utilities.git"
+  },
+  "private": true,
+  "scripts": {
+    "start": "tsx watch --clear-screen=false src/index",
+    "build": "tsc --project src/tsconfig.json",
+    "lint": "eslint {src,tests}/**/*.ts *.js",
+    "test": "jest --reporters default --watch",
+    "test:ci": "jest --coverage --ci",
+    "test:debug": "jest --reporters default --cache=false --detectOpenHandles --runInBand --watch",
+    "preversion": "npm run lint && npm run test:ci",
+    "version": "npm run build && git add .",
+    "postversion": "echo \"Publish Artifacts\"",
+    "prepare": "husky || cd ."
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "winston": "^3.13.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@tsconfig/node22": "^22.0.0",
+    "@types/ejs": "^3.1.5",
+    "@types/eslint": "^9.6.0",
+    "@types/node": "^22.1.0",
+    "ejs": "^3.1.10",
+    "eslint": "^9.8.0",
+    "husky": "^9.1.4",
+    "jest": "^29.5.0",
+    "jest-mock-extended": "^3.0.7",
+    "lint-staged": "^15.2.7",
+    "prettier": "^3.3.3",
+    "ts-jest": "^29.2.4",
+    "tsx": "^4.16.3",
+    "type-fest": "^4.23.0",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.0.0"
+  }
+}
