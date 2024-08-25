@@ -10,6 +10,7 @@ node_modules/
 /dist/cjs/
 /dist/esm/*
 !/dist/esm/eslint-config.js
+*.tgz
 
 # misc
 .DS_Store

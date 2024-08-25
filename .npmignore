@@ -1,0 +1,14 @@
+/.github/
+/.husky/
+/.vscode/
+/coverage/
+/example/
+/test/
+
+/.git*
+/.lintstagedrc.js
+/.npm*
+/.prettier*
+/eslint.config.js
+/jest.config.js
+/tsconfig.json
