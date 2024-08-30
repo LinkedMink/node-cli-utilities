@@ -18,23 +18,21 @@
     "url": "https://github.com/sponsors/LinkedMink"
   },
   "type": "module",
-  "main": "./dist/esm/index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
+      "types": "./dist/esm/index.d.ts",
       "default": "./dist/esm/index.js"
     },
     "./logger": {
       "import": "./dist/esm/preload/logger.preload.js",
       "require": "./dist/cjs/preload/logger.preload.js",
+      "types": "./dist/esm/preload/logger.preload.d.ts",
       "default": "./dist/esm/preload/logger.preload.js"
-    },
-    "./eslint-config": {
-      "import": "./dist/esm/eslint-config.js",
-      "require": "./dist/cjs/eslint-config.js",
-      "default": "./dist/esm/eslint-config.js"
     }
   },
   "repository": {
@@ -59,25 +57,10 @@
     "winston": "^3.13.1",
     "zod": "^3.23.8"
   },
-  "peerDependencies": {
-    "@eslint/js": "^9.9.0",
-    "eslint": "^9.9.0",
-    "typescript-eslint": "^8.0.0"
-  },
-  "peerDependenciesMeta": {
-    "@eslint/js": {
-      "optional": true
-    },
-    "eslint": {
-      "optional": true
-    },
-    "typescript-eslint": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@jest/globals": "^29.7.0",
+    "@linkedmink/eslint-config": "^1.0.2",
     "@tsconfig/node22": "^22.0.0",
     "@types/ejs": "^3.1.5",
     "@types/eslint__js": "^8.42.3",

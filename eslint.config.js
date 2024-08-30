@@ -1,6 +1,5 @@
 // @ts-check
 
-import { flatConfig } from "@linkedmink/node-cli-utilities/eslint-config";
-import tsEslint from "typescript-eslint";
+import { eslintConfig } from "@linkedmink/eslint-config";
 
-export default tsEslint.config(...flatConfig);
+export default eslintConfig;
