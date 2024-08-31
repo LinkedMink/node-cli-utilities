@@ -1,7 +1,7 @@
-import { spawn } from "node:child_process";
 import { Command } from "commander";
-import { getLogger } from "../preload/logger.preload.js";
+import { spawn } from "node:child_process";
 import { Profiler } from "winston";
+import { getLogger } from "../preload/logger.preload.js";
 
 export class CommandError extends Error {
   constructor(
@@ -25,7 +25,7 @@ export class CommandError extends Error {
   }
 }
 
-export function spawnAsync(command: string, args: string[]) {
+export function spawnAsync(command: string, args: string[]): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const spawned = spawn(command, args, {
       stdio: "inherit",
@@ -50,7 +50,7 @@ export function spawnAsync(command: string, args: string[]) {
   });
 }
 
-export async function main(cli: Command) {
+export async function main(cli: Command): Promise<void> {
   const logger = getLogger();
 
   cli.alias(`npx ${cli.name()}`);

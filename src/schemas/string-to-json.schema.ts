@@ -1,9 +1,22 @@
 import { z } from "zod";
-import type { jsonSchema } from "./json.schema.js";
+import type { JsonToken } from "./json.schema.js";
 
-export const stringToJsonSchema = z.string().transform((input, ctx) => {
+export type ZodEffectStringToJson = z.ZodEffects<
+  z.ZodString,
+  | string
+  | number
+  | boolean
+  | {
+      [key: string]: JsonToken;
+    }
+  | JsonToken[]
+  | null,
+  string
+>;
+
+export const stringToJsonSchema: ZodEffectStringToJson = z.string().transform((input, ctx) => {
   try {
-    return JSON.parse(input) as z.infer<typeof jsonSchema>;
+    return JSON.parse(input) as JsonToken;
   } catch {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Invalid JSON" });
     return z.NEVER;

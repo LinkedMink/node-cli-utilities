@@ -1,6 +1,6 @@
 {
   "name": "@linkedmink/node-cli-utilities",
-  "version": "1.0.0-0",
+  "version": "1.0.0-5",
   "description": "Shared utilities and configuration for development environments setup by @LinkedMink",
   "homepage": "https://github.com/LinkedMink/node-cli-utilities#readme",
   "bugs": {
@@ -41,20 +41,27 @@
   },
   "scripts": {
     "start": "tsx watch --clear-screen=false example/index",
-    "build": "tsc --project src/tsconfig.json && tsc --project src/tsconfig.cjs.json",
-    "lint": "eslint {src,tests}/**/*.ts *.js",
+    "build": "concurrently -c green,yellow -n esm,cjs \"tsc --project src/tsconfig.json\" \"tsc --project src/tsconfig.cjs.json\"",
+    "clean": "node -e \"fs.rm('dist', { force: true, recursive: true }, () => {}); fs.rm('coverage', { force: true, recursive: true }, () => {})\"",
+    "lint": "eslint {src,test}/**/*.ts *.js",
     "test": "jest --reporters default --watch",
     "test:ci": "jest --coverage --ci",
     "test:debug": "jest --reporters default --cache=false --detectOpenHandles --runInBand --watch",
-    "preversion": "npm run lint && npm run test:ci",
-    "version": "npm run build && git add .",
-    "postversion": "echo \"Publish Artifacts\"",
-    "prepack": "rimraf dist && npm run build",
+    "preversion": "concurrently -c blue,magenta,cyan npm:build npm:lint npm:test:ci",
+    "version": "git add .",
+    "postversion": "node -e \"import('./package.json', {with: {type: 'json'}}).then((p) => process.exit(p.default.version.includes('-') ? 1 : 0))\" || npm publish",
+    "version:prerelease": "npm --no-git-tag-version version prerelease",
+    "prepack": "npm run clean && npm run build",
     "prepare": "husky || cd ."
   },
   "dependencies": {
+    "chalk": "^5.3.0",
+    "ejs": "^3.1.10",
+    "triple-beam": "^1.4.1",
+    "winston": "^3.13.1"
+  },
+  "peerDependencies": {
     "commander": "^12.1.0",
-    "winston": "^3.13.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -66,14 +73,13 @@
     "@types/eslint__js": "^8.42.3",
     "@types/eslint": "^9.6.0",
     "@types/node": "^22.1.0",
-    "ejs": "^3.1.10",
+    "concurrently": "^8.2.2",
     "eslint": "^9.9.0",
     "husky": "^9.1.4",
     "jest": "^29.5.0",
     "jest-mock-extended": "^3.0.7",
     "lint-staged": "^15.2.7",
     "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
     "ts-jest": "^29.2.4",
     "tsx": "^4.16.3",
     "type-fest": "^4.23.0",

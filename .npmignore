@@ -3,6 +3,7 @@
 /.vscode/
 /coverage/
 /example/
+/src/tsconfig*.json
 /test/
 
 /.git*

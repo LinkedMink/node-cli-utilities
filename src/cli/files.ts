@@ -2,7 +2,10 @@ import { renderFile } from "ejs";
 import { stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-export async function execIfFileNotExist<T>(path: string, exec: (path: string) => Promise<T>) {
+export async function execIfFileNotExist<T>(
+  path: string,
+  exec: (path: string) => Promise<T>,
+): Promise<T | undefined> {
   try {
     await stat(path);
     console.log(`File exist, skip: ${path}`);
@@ -13,11 +16,12 @@ export async function execIfFileNotExist<T>(path: string, exec: (path: string) =
 }
 
 const EJS_EXT_LENGTH = ".ejs".length;
+
 export function writeEjsTemplate(
   ejsPathInTemplateDir: string,
   data: Record<string, unknown>,
   ejsTemplateDir = "cli/templates/",
-) {
+): Promise<void> {
   const writePath = ejsPathInTemplateDir.substring(0, ejsPathInTemplateDir.length - EJS_EXT_LENGTH);
   const writeRenderedEjs = async () => {
     const rendered = await renderFile(path.join(ejsTemplateDir, ejsPathInTemplateDir), data);

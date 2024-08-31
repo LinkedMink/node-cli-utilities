@@ -1,10 +1,14 @@
-/** @type {import("jest").Config} */
-const config = {
+// @ts-check
+
+const IGNORE_COVERAGE_FILES = ["index.ts", "json.schema.ts", "config/*.ts"];
+
+/** @type {import("ts-jest").JestConfigWithTsJest} */
+export default {
   verbose: true,
   moduleFileExtensions: ["js", "mjs", "cjs", "json", "ts", "mts", "cts"],
   testMatch: ["**/test/**/(*.test|*.spec).ts"],
   collectCoverage: false,
-  collectCoverageFrom: ["src/**/!(index|*.types|*.enum).ts"],
+  collectCoverageFrom: ["src/**/*.ts", ...IGNORE_COVERAGE_FILES.map(f => `!src/**/${f}`)],
   // coverageThreshold: {
   //   global: {
   //     statements: 75,
@@ -24,5 +28,3 @@ const config = {
     ],
   },
 };
-
-export default config;

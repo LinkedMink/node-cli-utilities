@@ -67,7 +67,7 @@ const loggers = new Container({
   transports: [new transports.Console()],
 });
 
-export function getLogger(label = loggingConfig.defaultContext): AppLogger {
+export function getLogger(label: string = loggingConfig.defaultContext): AppLogger {
   if (loggers.has(label)) {
     return loggers.get(label);
   }
@@ -105,7 +105,7 @@ export function formatError(error: unknown): string {
   return `Unspecified Unhandled Error: ${error as string} - ${stack}`;
 }
 
-export const defaultLogger = getLogger();
+export const defaultLogger: AppLogger = getLogger();
 
 process.on("uncaughtExceptionMonitor", (error, origin) => {
   defaultLogger.error(`${origin}: ${formatError(error)}`);

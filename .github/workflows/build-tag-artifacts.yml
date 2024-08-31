@@ -1,9 +1,6 @@
 ---
 name: Build Tag with Artifacts
 
-concurrency:
-  group: build-tag
-
 # yamllint disable-line rule:truthy
 on:
   push:
@@ -11,21 +8,20 @@ on:
       - "v*.*.*"
   workflow_dispatch:
     inputs:
-      uploadToTag:
+      upload-to-tag:
         type: string
         required: true
-        description: "Upload built Bundle to Github tag"
+        description: "Associate built Bundle with Github tag"
 
 jobs:
   build:
     uses: LinkedMink/.github/.github/workflows/build-npm-package.yml@main
     with:
-      uploadBuild: true
+      upload-build: true
+      # node-js-version: "22"
   upload:
     needs: build
     uses: LinkedMink/.github/.github/workflows/publish-artifacts-for-tag.yml@main
     with:
-      uploadToTag: ${{ github.event.inputs.uploadToTag || github.ref_name }}
-      uploadedBuildName: ${{ needs.build.outputs.uploadedBuildName }}
-    secrets:
-      REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      upload-to-tag: ${{ github.event.inputs.upload-to-tag || github.ref_name }}
+      uploaded-build-name: ${{ needs.build.outputs.uploaded-build-name }}

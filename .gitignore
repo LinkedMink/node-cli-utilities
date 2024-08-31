@@ -7,9 +7,7 @@ node_modules/
 /coverage/
 
 # production
-/dist/cjs/
-/dist/esm/*
-!/dist/esm/eslint-config.js
+/dist/
 *.tgz
 
 # misc
