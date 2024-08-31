@@ -1,6 +1,6 @@
 {
   "name": "@linkedmink/node-cli-utilities",
-  "version": "1.0.0-5",
+  "version": "1.0.0",
   "description": "Shared utilities and configuration for development environments setup by @LinkedMink",
   "homepage": "https://github.com/LinkedMink/node-cli-utilities#readme",
   "bugs": {
