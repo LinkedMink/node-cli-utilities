@@ -1,7 +1,9 @@
-import { z } from "zod";
-import { loggingConfigSchema } from "./logging,config.js";
+import { z, ZodObject } from "zod";
+import { loggingConfigSchema, ZodPipelineLoggingConfig } from "./logging.config.js";
 
-export const envConfigSchema = z.object({
+export const envConfigSchema: ZodObject<{
+  LOGGING: ZodPipelineLoggingConfig;
+}> = z.object({
   LOGGING: loggingConfigSchema,
 });
 

@@ -1,0 +1,17 @@
+---
+name: Publish NPM Package
+
+# yamllint disable-line rule:truthy
+on:
+  release:
+    types: [released]
+
+jobs:
+  build:
+    uses: LinkedMink/.github/.github/workflows/build-npm-package.yml@main
+    with:
+      upload-build: false
+      publish-package: true
+    #   publish-registry-url: "https://npm.pkg.github.com"
+    # secrets:
+    #   node-auth-token: ${{ secrets.GITHUB_TOKEN }}

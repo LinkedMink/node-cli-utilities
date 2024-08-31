@@ -8,6 +8,7 @@ node_modules/
 
 # production
 /dist/
+*.tgz
 
 # misc
 .DS_Store

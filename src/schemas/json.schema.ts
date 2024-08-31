@@ -1,11 +1,12 @@
 import { z } from "zod";
 
-export const jsonLiteralSchema = z.union([z.string(), z.number(), z.boolean(), z.null()]);
+export const jsonLiteralSchema: z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]> =
+  z.union([z.string(), z.number(), z.boolean(), z.null()]);
 
-type JsonLiteral = z.infer<typeof jsonLiteralSchema>;
+export type JsonLiteral = z.infer<typeof jsonLiteralSchema>;
 
-type Json = JsonLiteral | { [key: string]: Json } | Json[];
+export type JsonToken = JsonLiteral | { [key: string]: JsonToken } | JsonToken[];
 
-export const jsonSchema: z.ZodType<Json> = z.lazy(() =>
-  z.union([jsonLiteralSchema, z.array(jsonSchema), z.record(jsonSchema)]),
+export const jsonTokenSchema: z.ZodType<JsonToken> = z.lazy(() =>
+  z.union([jsonLiteralSchema, z.array(jsonTokenSchema), z.record(jsonTokenSchema)]),
 );
