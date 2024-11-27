@@ -8,7 +8,6 @@ import {
   Container,
   format,
   LeveledLogMethod,
-  LogCallback,
   Logform,
   transports,
   Logger as WinstonLogger,
@@ -22,10 +21,10 @@ interface AppTransformableInfo extends Logform.TransformableInfo {
 }
 
 interface AppLogMethod extends LeveledLogMethod {
-  (message: string, callback: LogCallback): AppLogger;
-  (message: string, meta: unknown, callback: LogCallback): AppLogger;
   (message: string, ...meta: unknown[]): AppLogger;
   (message: unknown): AppLogger;
+  // eslint-disable-next-line @typescript-eslint/unified-signatures
+  (infoObject: object): AppLogger;
 }
 
 export type AppLogger = ConditionalExcept<WinstonLogger, LeveledLogMethod> & {
