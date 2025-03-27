@@ -1,6 +1,6 @@
 {
   "name": "@linkedmink/node-cli-utilities",
-  "version": "1.0.1-0",
+  "version": "1.0.1-1",
   "description": "Shared utilities and configuration for development environments setup by @LinkedMink",
   "homepage": "https://github.com/LinkedMink/node-cli-utilities#readme",
   "bugs": {
@@ -41,15 +41,15 @@
   },
   "scripts": {
     "start": "tsx watch --clear-screen=false example/index",
-    "build": "concurrently -c green,yellow -n esm,cjs \"tsc --project src/tsconfig.json\" \"tsc --project src/tsconfig.cjs.json\"",
+    "build": "tsc --project src/tsconfig.json && tsc --project src/tsconfig.cjs.json",
     "clean": "node -e \"fs.rm('dist', { force: true, recursive: true }, () => {}); fs.rm('coverage', { force: true, recursive: true }, () => {})\"",
     "lint": "eslint {src,test}/**/*.ts *.js",
     "test": "jest --reporters default --watch",
     "test:ci": "jest --coverage --ci",
     "test:debug": "jest --reporters default --cache=false --detectOpenHandles --runInBand --watch",
-    "preversion": "concurrently -c blue,magenta,cyan npm:build npm:lint npm:test:ci",
+    "preversion": "concurrently -c auto npm:build npm:lint npm:test:ci",
     "version": "git add .",
-    "postversion": "node -e \"import('./package.json', {with: {type: 'json'}}).then((p) => process.exit(p.default.version.includes('-') ? 1 : 0))\" || npm publish",
+    "postversion": "node -e \"import('./package.json', {with: {type: 'json'}}).then((p) => process.exit(p.default.version.includes('-') ? 1 : 0))\" || npm publish --tag dev",
     "version:prerelease": "npm --no-git-tag-version version prerelease",
     "prepack": "npm run clean && npm run build",
     "prepare": "husky || cd ."
@@ -61,8 +61,8 @@
     "winston": "^3.13.1"
   },
   "peerDependencies": {
-    "commander": "^12.1.0",
-    "zod": "^3.23.8"
+    "commander": ">= 12.0.0",
+    "zod": ">= 3.23.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",

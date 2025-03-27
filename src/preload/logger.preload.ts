@@ -49,12 +49,12 @@ const NON_META_KEYS = new Set<keyof AppTransformableInfo>([
 const formatStack = [
   format.cli({ levels: LogLevels }),
   format.timestamp(),
-  appPrintf(info => {
+  appPrintf((info) => {
     const { timestamp, level, message, ...meta } = info;
     const entry = `${timestamp} ${level} ${message}`;
-    const metaKeys = Object.keys(meta).filter(k => !NON_META_KEYS.has(k));
+    const metaKeys = Object.keys(meta).filter((k) => !NON_META_KEYS.has(k));
     return metaKeys.length > 0
-      ? [entry, ...metaKeys.map(k => `\t${chalk.bold(k)}: ${meta[k] as string}`)].join("\n")
+      ? [entry, ...metaKeys.map((k) => `\t${chalk.bold(k)}: ${meta[k] as string}`)].join("\n")
       : entry;
   }),
 ];
@@ -101,7 +101,7 @@ export function formatError(error: unknown): string {
   }
 
   const stack = new Error().stack;
-  return `Unspecified Unhandled Error: ${error as string} - ${stack}`;
+  return `Unspecified Unhandled Error: ${error} - ${stack}`;
 }
 
 export const defaultLogger: AppLogger = getLogger();
