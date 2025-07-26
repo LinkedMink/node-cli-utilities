@@ -1,5 +1,5 @@
 import { config } from "winston";
-import { z, ZodDefault, ZodObject, ZodPipeline } from "zod";
+import { z, ZodDefault, ZodObject, ZodPipe } from "zod";
 import { stringToJsonSchema, ZodEffectStringToJson } from "../schemas/string-to-json.schema.js";
 
 export const LogLevels: {
@@ -17,7 +17,14 @@ export const LogLevels: {
 export type LogLevel = keyof typeof LogLevels;
 
 type ZodObjectLoggingConfig = ZodObject<{
-  level: z.ZodDefault<z.ZodEnum<["error", "warn", "info", "debug"]>>;
+  level: z.ZodDefault<
+    z.ZodEnum<{
+      error: "error";
+      warn: "warn";
+      info: "info";
+      debug: "debug";
+    }>
+  >;
   defaultContext: z.ZodDefault<z.ZodString>;
 }>;
 
@@ -26,12 +33,12 @@ const loggingConfigObjectSchema: ZodObjectLoggingConfig = z.object({
   defaultContext: z.string().min(1).default("app"),
 });
 
-export type ZodPipelineLoggingConfig = ZodPipeline<
+export type ZodPipeLoggingConfig = ZodPipe<
   ZodDefault<ZodEffectStringToJson>,
   ZodObjectLoggingConfig
 >;
 
-export const loggingConfigSchema: ZodPipelineLoggingConfig = stringToJsonSchema
+export const loggingConfigSchema: ZodPipeLoggingConfig = stringToJsonSchema
   .default("{}")
   .pipe(loggingConfigObjectSchema);
 

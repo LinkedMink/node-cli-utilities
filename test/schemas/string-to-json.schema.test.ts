@@ -1,5 +1,4 @@
 import { describe, expect, test } from "@jest/globals";
-import { z } from "zod";
 import { JsonToken } from "../../src/schemas/json.schema";
 import { stringToJsonSchema } from "../../src/schemas/string-to-json.schema";
 
@@ -24,7 +23,7 @@ describe("stringToJsonSchema", () => {
 
     expect(result.success).toBe(false);
     expect(result.error?.issues).toContainEqual({
-      code: z.ZodIssueCode.custom,
+      code: "custom",
       message: "Invalid JSON",
       path: [],
     });
