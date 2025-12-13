@@ -1,6 +1,6 @@
 {
   "name": "@linkedmink/node-cli-utilities",
-  "version": "1.1.0-1",
+  "version": "1.1.0-2",
   "description": "Shared utilities and configuration for development environments setup by @LinkedMink",
   "homepage": "https://github.com/LinkedMink/node-cli-utilities#readme",
   "bugs": {
@@ -62,17 +62,15 @@
   },
   "peerDependencies": {
     "commander": ">= 12.0.0",
-    "zod": ">= 3.23.0"
+    "zod": ">= 4.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
     "@jest/globals": "^30.0.5",
     "@linkedmink/eslint-config": "^1.0.2",
-    "@tsconfig/node22": "^22.0.0",
+    "@tsconfig/node24": "^24.0.3",
     "@types/ejs": "^3.1.5",
-    "@types/eslint__js": "^8.42.3",
-    "@types/eslint": "^9.6.0",
-    "@types/node": "^22.1.0",
+    "@types/node": "^24.10.3",
     "commander": "^14.0.0",
     "concurrently": "^9.0.1",
     "eslint": "^9.9.0",
@@ -83,7 +81,7 @@
     "prettier": "^3.3.3",
     "ts-jest": "^29.2.4",
     "tsx": "^4.16.3",
-    "type-fest": "^4.23.0",
+    "type-fest": "^5.3.1",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.0",
     "zod": "^4.0.10"

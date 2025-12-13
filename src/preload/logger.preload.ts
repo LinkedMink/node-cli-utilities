@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { isNativeError } from "node:util/types";
 import { LEVEL, MESSAGE, SPLAT } from "triple-beam";
 import type { ConditionalExcept } from "type-fest";
 import {
@@ -86,22 +85,12 @@ export function getLoggerByUrl(moduleUrl: string): AppLogger {
   return getLogger(moduleName);
 }
 
-type StringConvert = { toString(): string };
-function isStringConvert(value: unknown): value is StringConvert {
-  return typeof (value as StringConvert).toString === "function";
-}
-
 export function formatError(error: unknown): string {
-  if (isNativeError(error)) {
+  if (error instanceof Error) {
     return error.stack ?? error.message;
-  } else if (typeof error === "string") {
-    return error;
-  } else if (isStringConvert(error)) {
-    return error.toString();
+  } else {
+    return String(error);
   }
-
-  const stack = new Error().stack;
-  return `Unspecified Unhandled Error: ${error} - ${stack}`;
 }
 
 export const defaultLogger: AppLogger = getLogger();
