@@ -1,6 +1,6 @@
 {
   "name": "@linkedmink/node-cli-utilities",
-  "version": "1.1.0",
+  "version": "2.0.0-0",
   "description": "Shared utilities and configuration for development environments setup by @LinkedMink",
   "homepage": "https://github.com/LinkedMink/node-cli-utilities#readme",
   "bugs": {
@@ -18,21 +18,19 @@
     "url": "https://github.com/sponsors/LinkedMink"
   },
   "type": "module",
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/esm/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js",
-      "types": "./dist/esm/index.d.ts",
-      "default": "./dist/esm/index.js"
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./logger": {
-      "import": "./dist/esm/preload/logger.preload.js",
-      "require": "./dist/cjs/preload/logger.preload.js",
-      "types": "./dist/esm/preload/logger.preload.d.ts",
-      "default": "./dist/esm/preload/logger.preload.js"
+      "import": "./dist/preload/logger.preload.js",
+      "types": "./dist/preload/logger.preload.d.ts",
+      "default": "./dist/preload/logger.preload.js"
     }
   },
   "repository": {
@@ -41,7 +39,7 @@
   },
   "scripts": {
     "start": "tsx watch --clear-screen=false example/index",
-    "build": "tsc --project src/tsconfig.json && tsc --project src/tsconfig.cjs.json",
+    "build": "tsc --project src/tsconfig.json",
     "clean": "node -e \"fs.rm('dist', { force: true, recursive: true }, () => {}); fs.rm('coverage', { force: true, recursive: true }, () => {})\"",
     "lint": "eslint {src,test}/**/*.ts *.js",
     "test": "jest --reporters default --watch",
@@ -55,35 +53,39 @@
     "prepare": "husky || cd ."
   },
   "dependencies": {
-    "chalk": "^5.3.0",
-    "ejs": "^3.1.10",
+    "chalk": "^6.0.0",
+    "ejs": "^6.0.1",
     "triple-beam": "^1.4.1",
     "winston": "^3.13.1"
   },
   "peerDependencies": {
-    "commander": ">= 12.0.0",
+    "commander": ">= 15.0.0",
     "zod": ">= 4.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.9.0",
+    "@eslint/js": "^10.0.1",
     "@jest/globals": "^30.0.5",
     "@linkedmink/eslint-config": "^1.0.2",
     "@tsconfig/node24": "^24.0.3",
     "@types/ejs": "^3.1.5",
     "@types/node": "^24.10.3",
-    "commander": "^14.0.0",
-    "concurrently": "^9.0.1",
-    "eslint": "^9.9.0",
+    "commander": "^15.0.0",
+    "concurrently": "^10.0.3",
+    "eslint": "^10.6.0",
     "husky": "^9.1.4",
     "jest": "^30.0.5",
     "jest-mock-extended": "^4.0.0",
-    "lint-staged": "^16.1.2",
+    "lint-staged": "^17.0.8",
     "prettier": "^3.3.3",
     "ts-jest": "^29.2.4",
     "tsx": "^4.16.3",
     "type-fest": "^5.3.1",
-    "typescript": "^5.5.4",
+    "typescript": "^6.0.3",
     "typescript-eslint": "^8.0.0",
     "zod": "^4.0.10"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "unrs-resolver@1.12.2": true
   }
 }

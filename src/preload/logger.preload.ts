@@ -3,14 +3,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { LEVEL, MESSAGE, SPLAT } from "triple-beam";
 import type { ConditionalExcept } from "type-fest";
-import {
-  Container,
-  format,
-  LeveledLogMethod,
-  Logform,
-  transports,
-  Logger as WinstonLogger,
-} from "winston";
+import * as winston from "winston";
+import type { LeveledLogMethod, Logform, Logger as WinstonLogger } from "winston";
 import { loggingConfigSchema, LogLevel, LogLevels } from "../config/logging.config.js";
 
 interface AppTransformableInfo extends Logform.TransformableInfo {
@@ -32,7 +26,7 @@ export type AppLogger = ConditionalExcept<WinstonLogger, LeveledLogMethod> & {
 
 const loggingConfig = loggingConfigSchema.parse(process.env.LOGGING);
 
-const appPrintf = format.printf as (
+const appPrintf = winston.format.printf as (
   templateFunction: (info: AppTransformableInfo) => string,
 ) => Logform.Format;
 
@@ -46,8 +40,8 @@ const NON_META_KEYS = new Set<keyof AppTransformableInfo>([
 ]);
 
 const formatStack = [
-  format.cli({ levels: LogLevels }),
-  format.timestamp(),
+  winston.format.cli({ levels: LogLevels }),
+  winston.format.timestamp(),
   appPrintf((info) => {
     const { timestamp, level, message, ...meta } = info;
     const entry = `${timestamp} ${level} ${message}`;
@@ -58,11 +52,11 @@ const formatStack = [
   }),
 ];
 
-const loggers = new Container({
+const loggers = new winston.Container({
   level: loggingConfig.level,
   levels: LogLevels,
-  format: format.combine(...formatStack),
-  transports: [new transports.Console()],
+  format: winston.format.combine(...formatStack),
+  transports: [new winston.transports.Console()],
 });
 
 export function getLogger(label: string = loggingConfig.defaultContext): AppLogger {
@@ -72,7 +66,7 @@ export function getLogger(label: string = loggingConfig.defaultContext): AppLogg
 
   return loggers.add(label, {
     ...loggers.options,
-    format: format.combine(format.label({ label, message: true }), ...formatStack),
+    format: winston.format.combine(winston.format.label({ label, message: true }), ...formatStack),
   });
 }
 

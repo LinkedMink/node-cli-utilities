@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import { spawn } from "node:child_process";
-import { Profiler } from "winston";
+import type { Profiler } from "winston";
 import { getLogger } from "../preload/logger.preload.js";
 
 export class CommandError extends Error {
@@ -32,7 +32,7 @@ export function spawnAsync(command: string, args: string[]): Promise<void> {
       shell: process.platform === "win32",
     });
 
-    spawned.on("error", error => {
+    spawned.on("error", (error) => {
       reject(error);
     });
     spawned.on("exit", (code, signal) => {

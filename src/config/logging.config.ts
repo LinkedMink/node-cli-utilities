@@ -1,4 +1,4 @@
-import { config } from "winston";
+import * as winston from "winston";
 import { z, ZodDefault, ZodObject, ZodPipe } from "zod";
 import { stringToJsonSchema, ZodEffectStringToJson } from "../schemas/string-to-json.schema.js";
 
@@ -8,10 +8,10 @@ export const LogLevels: {
   readonly info: number;
   readonly debug: number;
 } = {
-  error: config.npm.levels.error,
-  warn: config.npm.levels.warn,
-  info: config.npm.levels.info,
-  debug: config.npm.levels.debug,
+  error: winston.config.npm.levels.error,
+  warn: winston.config.npm.levels.warn,
+  info: winston.config.npm.levels.info,
+  debug: winston.config.npm.levels.debug,
 } as const;
 
 export type LogLevel = keyof typeof LogLevels;
