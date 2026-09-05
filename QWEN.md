@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-**`@linkedmink/node-cli-utilities`** is a shared TypeScript utility library (v1.1.1) providing building blocks for Node.js CLI applications and development environments, created by @LinkedMink (Harlan Sang).
+**`@linkedmink/node-cli-utilities`** is a shared TypeScript utility library (v2.0.0-1) providing building blocks for Node.js CLI applications and development environments, created by @LinkedMink (Harlan Sang).
 
-It targets **Node 24+** and publishes **dual-module bundles**: ESM (`dist/esm/`) and CJS (`dist/cjs/`).
+It targets **Node 24+** and publishes a **single ESM bundle** to `dist/`.
 
 ### What it provides
 
@@ -25,47 +25,44 @@ It targets **Node 24+** and publishes **dual-module bundles**: ESM (`dist/esm/`)
 
 - **Runtime:** `chalk ^6`, `ejs`, `triple-beam`, `winston`
 - **Peer (required by consumers):** `commander >= 15`, `zod >= 4`
-- **Dev tooling:** TypeScript 6, ts-jest, Jest 30, ESLint 10 (via `@linkedmink/eslint-config`), Prettier, Husky, lint-staged, concurrently, tsx
+- **Dev tooling:** TypeScript 7 (native `tsc`) with `@typescript/typescript6` side-by-side for tooling, ts-jest, Jest 30, ESLint 10 (via `@linkedmink/eslint-config`), Prettier, Husky, lint-staged, concurrently, tsx
 
 ---
 
 ## Building and Running
 
-| Script                | Description                                                                                              |
-| --------------------- | -------------------------------------------------------------------------------------------------------- |
-| `npm run build`       | Compiles twice: ESM (`src/tsconfig.json` → `dist/esm/`) then CJS (`src/tsconfig.cjs.json` → `dist/cjs/`) |
-| `npm run clean`       | Removes `dist/` and `coverage/` directories                                                              |
-| `npm start`           | Runs the example CLI via `tsx watch` (hot-reload)                                                        |
-| `npm test`            | Jest in interactive watch mode                                                                           |
-| `npm run test:ci`     | Jest with coverage report, no watch (CI-friendly)                                                        |
-| `npm run test:debug`  | Jest in single-threaded mode with open-handle detection                                                  |
-| `npm run lint`        | ESLint on `src/` and `test/` TypeScript files plus config JS files                                       |
-| `npm run preversion`  | Runs build, lint, and CI tests in parallel before version bumps                                          |
-| `npm run postversion` | Auto-publishes to `dev` tag if the new version is a prerelease                                           |
-| `npm run prepare`     | Installs Husky hooks                                                                                     |
+| Script                | Description                                                                                                |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `npm run build`       | Compiles `src/tsconfig.json` → `dist/` (ESM + declarations + source maps) with native `tsc` (TypeScript 7) |
+| `npm run clean`       | Removes `dist/` and `coverage/` directories                                                                |
+| `npm start`           | Runs the example CLI via `tsx watch` (hot-reload)                                                          |
+| `npm test`            | Jest in interactive watch mode                                                                             |
+| `npm run test:ci`     | Jest with coverage report, no watch (CI-friendly)                                                          |
+| `npm run test:debug`  | Jest in single-threaded mode with open-handle detection                                                    |
+| `npm run lint`        | ESLint on `src/` and `test/` TypeScript files plus config JS files                                         |
+| `npm run preversion`  | Runs build, lint, and CI tests in parallel before version bumps                                            |
+| `npm run postversion` | Auto-publishes to `dev` tag if the new version is a prerelease                                             |
+| `npm run prepare`     | Installs Husky hooks                                                                                       |
 
 ### Build output structure
 
 ```
 dist/
-├── esm/                          # ESM output (import)
-│   ├── cli/
-│   │   ├── commands.js
-│   │   ├── files.js
-│   │   └── inputs.js
-│   ├── config/
-│   │   ├── env.config.js
-│   │   └── logging.config.js
-│   ├── preload/
-│   │   └── logger.preload.js     # also exported as ./logger entry
-│   ├── schemas/
-│   │   ├── index.js
-│   │   ├── json.schema.js
-│   │   └── string-to-json.schema.js
+├── cli/
+│   ├── commands.js
+│   ├── files.js
+│   └── inputs.js
+├── config/
+│   ├── env.config.js
+│   └── logging.config.js
+├── preload/
+│   └── logger.preload.js         # also exported as ./logger entry
+├── schemas/
 │   ├── index.js
-│   └── *.d.ts + *.d.ts.map
-└── cjs/                          # CJS output (require)
-    └── (mirrors esm structure)
+│   ├── json.schema.js
+│   └── string-to-json.schema.js
+├── index.js
+└── *.d.ts + *.d.ts.map + *.js.map (per file)
 ```
 
 ---
@@ -74,7 +71,7 @@ dist/
 
 - **TypeScript strict mode** via `@tsconfig/node24` base. Source maps enabled. Declaration files with source maps generated.
 - **ESM-first** source (`"type": "module"` in package.json), `.js` extensions on all relative imports.
-- **Dual compilation**: two separate `tsc` invocations (one for ESM, one overriding to CommonJS).
+- **Single ESM compilation**: one `tsc` invocation (`src/tsconfig.json` → `dist/`) with `declaration` + `isolatedDeclarations`; the build binary is native TypeScript 7 via the `@typescript/native` alias.
 - **Testing**: Jest with ts-jest transformer. Test files live in `test/` alongside source (`test/cli/`, `test/config/`, `test/schemas/`, `test/preload/`). Coverage is excluded from CI for `index.ts`, `json.schema.ts`, and config files. GitHub Actions reporter is enabled.
   - **Unit test format** `describe` descriptions have the name of the function or class being tested or the filename for modules with collections of loosely functions. `test` descriptions follow the format "should <action-performed-and-or-returned-result> when <input-and-or-scenario>"
   - **Test all Zod schemas** using `safeParse()` — it returns `{ success: true, data }` or `{ success: false, error }`. Validate both happy paths (valid inputs) and edge cases (empty objects, missing fields, invalid JSON, non-string input). For piped schemas like `loggingConfigSchema`, test the full pipeline including default values.
@@ -123,9 +120,11 @@ dist/
 ## Dependency Update Rules
 
 - **`@types/*` packages** must match the major version of their target dependency (e.g., `@types/node` stays on Node.js 24.x unless the Node.js target changes).
-- **TypeScript 6+**: The `moduleResolution: "Node"` option is deprecated. Use `"node16"` or `"nodenext"` instead, and set `module` to `"Node16"` or `"NodeNext"` accordingly.
+- **TypeScript 7 runs side-by-side with `@typescript/typescript6`**: `typescript@7` (the native port) ships **no JS compiler API**, so tooling resolves the 6.x API package via the alias `"typescript": "npm:@typescript/typescript6@^6"`, while the build binary comes from `"@typescript/native": "npm:typescript@^7"` (`.bin/tsc` = 7.x, `.bin/tsc6` = 6.x). ts-jest 29 and typescript-eslint 8 require the JS API and hard-fail on bare `typescript@7`. Keep the alias on 6.x until that tooling supports TS 7 natively (per the "Running side-by-side with TypeScript 6.0" section of the TypeScript 7.0 announcement).
+- **ejs 6** is ESM-only with a single default export, but `@types/ejs` (3.x, named exports only) is still the types package — `import ejs from "ejs"` in source relies on `allowSyntheticDefaultImports`. In tests, mock ejs with an explicit factory (`jest.mock("ejs", () => ({ renderFile: jest.fn() }))`, like chalk in `test/setup.ts`) rather than auto-mock, and cast the mock ref to `jest.Mock<…>` because jest-mock 30 resolves ejs's overloaded `renderFile` to `never`.
+- **tsconfig**: `moduleResolution: "Node"` is deprecated — use `"node16"` or `"nodenext"` instead, with `module` set to `"Node16"` or `"NodeNext"` accordingly.
 - **ESLint v10**: The shared `@linkedmink/eslint-config` must be compatible with ESLint v10 rules.
-- **CJS tsconfig**: When using `moduleResolution: "node16"`, the `module` option must also be `"Node16"` (not `"CommonJS"`).
+- **npm 12 `allowScripts` gate**: dependency install scripts (postinstall etc.) are blocked by default and must be approved or denied via `npm install-scripts approve|deny <pkg>`; decisions persist in the `allowScripts` field of `package.json` (exact-version keys), so re-check them whenever dependency versions change.
 
 ---
 

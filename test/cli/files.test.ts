@@ -1,16 +1,22 @@
+import ejs from "ejs";
 import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
-import { renderFile } from "ejs";
 import type { Stats } from "node:fs";
 import { stat, writeFile } from "node:fs/promises";
 import { execIfFileNotExist, writeEjsTemplate } from "../../src/cli/files";
 
-jest.mock("ejs");
+// ejs 6 exposes a single default export, so mock it explicitly (like chalk in
+// setup.ts) instead of auto-mocking.
+jest.mock("ejs", () => ({ renderFile: jest.fn() }));
 jest.mock("node:fs/promises");
+
+// jest-mock 30 resolves ejs's generic renderFile overloads to `never`, so pin
+// the async signature used by src/cli/files.ts for typed mock access.
+const renderFile = ejs.renderFile as jest.Mock<(path: string, data?: object) => Promise<string>>;
 
 describe("execIfFileNotExist", () => {
   beforeEach(() => {
     jest.mocked(writeFile).mockResolvedValue();
-    jest.mocked(renderFile).mockResolvedValue("Rendered");
+    renderFile.mockResolvedValue("Rendered");
   });
 
   afterEach(() => {
@@ -45,7 +51,7 @@ describe("execIfFileNotExist", () => {
 describe("writeEjsTemplate", () => {
   beforeEach(() => {
     jest.mocked(writeFile).mockResolvedValue();
-    jest.mocked(renderFile).mockResolvedValue("Rendered");
+    renderFile.mockResolvedValue("Rendered");
   });
 
   afterEach(() => {
@@ -58,13 +64,11 @@ describe("writeEjsTemplate", () => {
 
     jest.mocked(stat).mockRejectedValue(new Error("ENOENT"));
     jest.mocked(writeFile).mockResolvedValue(undefined);
+    renderFile.mockResolvedValue(mockRendered);
 
     // Mock EJS renderFile to return controlled output.
     // This verifies the file path transformation (.ejs extension stripped)
     // and that writeFile is called once with the correct arguments.
-    const ejsModule = await import("ejs");
-    jest.spyOn(ejsModule, "renderFile").mockResolvedValue(mockRendered);
-
     await expect(
       writeEjsTemplate(ejsPath, { name: "World" }, "test/templates/"),
     ).resolves.toBeUndefined();
@@ -78,7 +82,7 @@ describe("writeEjsTemplate", () => {
 
     jest.mocked(stat).mockResolvedValue({ isFile: () => true } as Stats);
     const mockedWriteFile = jest.mocked(writeFile);
-    const mockedRenderFile = jest.mocked(renderFile);
+    const mockedRenderFile = renderFile;
 
     await writeEjsTemplate(ejsPath, {}, "test/templates/");
 

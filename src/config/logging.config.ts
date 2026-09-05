@@ -39,7 +39,7 @@ export type ZodPipeLoggingConfig = ZodPipe<
 >;
 
 export const loggingConfigSchema: ZodPipeLoggingConfig = stringToJsonSchema
-  .default("{}")
+  .default({})
   .pipe(loggingConfigObjectSchema);
 
 export type LoggingConfig = z.infer<typeof loggingConfigSchema>;

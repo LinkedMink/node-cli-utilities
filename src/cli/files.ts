@@ -1,4 +1,4 @@
-import { renderFile } from "ejs";
+import ejs from "ejs";
 import { stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
@@ -24,7 +24,7 @@ export function writeEjsTemplate(
 ): Promise<void> {
   const writePath = ejsPathInTemplateDir.substring(0, ejsPathInTemplateDir.length - EJS_EXT_LENGTH);
   const writeRenderedEjs = async () => {
-    const rendered = await renderFile(path.join(ejsTemplateDir, ejsPathInTemplateDir), data);
+    const rendered = await ejs.renderFile(path.join(ejsTemplateDir, ejsPathInTemplateDir), data);
     return writeFile(writePath, rendered, "utf8");
   };
 
